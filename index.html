@@ -38,15 +38,15 @@
   .todo-input{
     display:block;
     width:100%;
-    padding:12px 0;
+    padding:8px 0;
     border:none;
     border-bottom:1px solid #e8e0d6;
     background:transparent;
-    font-size:15px;
+    font-size:13px;
     color:#3d3d3d;
     outline:none;
     font-family:inherit;
-    margin-bottom:4px
+    margin-bottom:0
   }
   .todo-input::placeholder{color:#d5cdc0}
   .todo-count{
@@ -58,9 +58,9 @@
   .todo-list li{
     display:flex;
     align-items:center;
-    gap:12px;
-    padding:10px 0;
-    font-size:14px;
+    gap:8px;
+    padding:6px 0;
+    font-size:13px;
     color:#5a5a5a;
     cursor:pointer;
     border-bottom:1px solid #f0eae2
@@ -276,10 +276,10 @@
   </header>
 
   <!-- TODO -->
-  <input class="todo-input" id="todoInput" placeholder="记一件事..." autofocus>
+  <div class="section-title">待办</div>
+  <input class="todo-input" id="todoInput" placeholder="记一件事...">
   <div class="todo-count" id="todoCount"></div>
   <ul class="todo-list" id="todoList"></ul>
-
   <div class="todo-actions" id="todoActions"></div>
 
   <hr>
