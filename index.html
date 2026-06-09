@@ -21,7 +21,8 @@
     display:flex;
     align-items:baseline;
     gap:12px;
-    margin-bottom:48px
+    margin-bottom:16px;
+    position:relative
   }
   header h1{
     font-size:13px;
@@ -33,6 +34,20 @@
     font-size:12px;
     color:#d5cdc0
   }
+  .todo-badge{
+    margin-left:auto;
+    font-size:11px;
+    color:#c4b998;
+    cursor:pointer;
+    user-select:none
+  }
+  .todo-badge:hover{color:#b8aa92}
+  .todo-panel{
+    display:none;
+    margin:0 0 48px 0
+  }
+  .todo-panel.show{display:block}
+  .todo-badge{padding:2px 6px}
 
   /* ---- todo ---- */
   .todo-input{
@@ -264,7 +279,7 @@
 
   @media(max-width:500px){
     body{padding:32px 16px}
-    header{margin-bottom:36px}
+    header{margin-bottom:12px}
   }
 </style>
 </head>
@@ -273,14 +288,15 @@
   <header>
     <h1>杂坛</h1>
     <span class="date" id="today"></span>
+    <span class="todo-badge" id="todoBadge" onclick="toggleTodo()"></span>
   </header>
 
-  <!-- TODO -->
-  <div class="section-title">待办</div>
-  <input class="todo-input" id="todoInput" placeholder="记一件事...">
-  <div class="todo-count" id="todoCount"></div>
-  <ul class="todo-list" id="todoList"></ul>
-  <div class="todo-actions" id="todoActions"></div>
+  <div class="todo-panel" id="todoPanel">
+    <input class="todo-input" id="todoInput" placeholder="记一件事...">
+    <div class="todo-count" id="todoCount"></div>
+    <ul class="todo-list" id="todoList"></ul>
+    <div class="todo-actions" id="todoActions"></div>
+  </div>
 
   <hr>
   <div class="section-title">大创</div>
@@ -564,7 +580,14 @@ const input = document.getElementById('todoInput')
 const list = document.getElementById('todoList')
 const count = document.getElementById('todoCount')
 const actions = document.getElementById('todoActions')
+const badge = document.getElementById('todoBadge')
+const panel = document.getElementById('todoPanel')
 const KEY = 'zatan_todos'
+
+function toggleTodo(){
+  panel.classList.toggle('show')
+  if(panel.classList.contains('show')) input.focus()
+}
 
 function load(){
   const data = JSON.parse(localStorage.getItem(KEY) || '[]')
@@ -572,6 +595,7 @@ function load(){
   const undone = data.filter(t => !t.done).length
   const total = data.length
   count.textContent = undone ? `还有 ${undone} 件事` : total ? '都做完了' : ''
+  badge.textContent = undone ? `待办 ${undone}` : total ? '完成 ✓' : ''
   renderActions(data)
   data.forEach((t,i) => {
     const li = document.createElement('li')
