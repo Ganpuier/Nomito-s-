@@ -87,13 +87,49 @@
     color:#c4b998
   }
   .todo-list li .del{
-    margin-left:auto;
+    margin-left:6px;
     color:#e8e0d6;
     font-size:14px;
     cursor:pointer;
     padding:0 4px
   }
   .todo-list li .del:hover{color:#d4c5a9}
+  .todo-list li .move{
+    color:#e8e0d6;
+    font-size:11px;
+    cursor:pointer;
+    padding:0 2px;
+    user-select:none
+  }
+  .todo-list li .move:hover{color:#c4b998}
+  .todo-actions{
+    display:flex;
+    gap:16px;
+    margin-top:12px;
+    font-size:12px
+  }
+  .todo-actions button{
+    background:none;
+    border:none;
+    color:#c4b998;
+    cursor:pointer;
+    font-size:12px;
+    font-family:inherit;
+    padding:0
+  }
+  .todo-actions button:hover{color:#b8aa92}
+  .todo-actions span{color:#e8e0d6}
+  .todo-edit{
+    border:none;
+    border-bottom:1px solid #d4c5a9;
+    background:transparent;
+    font-size:14px;
+    color:#3d3d3d;
+    font-family:inherit;
+    outline:none;
+    padding:0;
+    width:100%
+  }
 
   hr{margin:48px 0;border:none;border-top:1px solid #ede8e0}
 
@@ -244,9 +280,9 @@
   <div class="todo-count" id="todoCount"></div>
   <ul class="todo-list" id="todoList"></ul>
 
-  <hr>
+  <div class="todo-actions" id="todoActions"></div>
 
-  <!-- 大创 -->
+  <hr>
   <div class="section-title">大创</div>
   <div id="progress">
     <div class="phase">
@@ -527,19 +563,25 @@ document.getElementById('today').textContent = new Date().toLocaleDateString('zh
 const input = document.getElementById('todoInput')
 const list = document.getElementById('todoList')
 const count = document.getElementById('todoCount')
+const actions = document.getElementById('todoActions')
 const KEY = 'zatan_todos'
 
 function load(){
   const data = JSON.parse(localStorage.getItem(KEY) || '[]')
   list.innerHTML = ''
   const undone = data.filter(t => !t.done).length
-  count.textContent = undone ? `还有 ${undone} 件事` : ''
+  const total = data.length
+  count.textContent = undone ? `还有 ${undone} 件事` : total ? '都做完了' : ''
+  renderActions(data)
   data.forEach((t,i) => {
     const li = document.createElement('li')
     li.className = t.done ? 'done' : ''
+    li.dataset.index = i
     li.innerHTML = `
+      <span class="move">↑</span>
+      <span class="move">↓</span>
       <span class="ck"></span>
-      <span class="txt">${t.text}</span>
+      <span class="txt">${escapeHtml(t.text)}</span>
       <span class="del">×</span>
     `
     li.querySelector('.ck').onclick = () => {
@@ -551,8 +593,59 @@ function load(){
       data.splice(i,1)
       save(data)
     }
+    li.querySelector('.txt').ondblclick = () => {
+      const old = t.text
+      const input = document.createElement('input')
+      input.className = 'todo-edit'
+      input.value = old
+      input.onblur = () => {
+        t.text = input.value.trim() || old
+        save(data)
+      }
+      input.onkeydown = e => {
+        if(e.key === 'Enter') input.blur()
+        if(e.key === 'Escape') { t.text = old; save(data) }
+      }
+      li.querySelector('.txt').replaceWith(input)
+      input.focus()
+      input.select()
+    }
+    // move up
+    li.querySelectorAll('.move')[0].onclick = e => {
+      e.stopPropagation()
+      if(i === 0) return
+      const removed = data.splice(i,1)[0]
+      data.splice(i-1, 0, removed)
+      save(data)
+    }
+    // move down
+    li.querySelectorAll('.move')[1].onclick = e => {
+      e.stopPropagation()
+      if(i === data.length - 1) return
+      const removed = data.splice(i,1)[0]
+      data.splice(i+1, 0, removed)
+      save(data)
+    }
     list.appendChild(li)
   })
+}
+
+function renderActions(data){
+  const done = data.filter(t => t.done).length
+  actions.innerHTML = done > 0
+    ? `<button onclick="clearDone()">清除已完成 (${done})</button>`
+    : ''
+}
+
+function clearDone(){
+  const data = JSON.parse(localStorage.getItem(KEY) || '[]')
+  save(data.filter(t => !t.done))
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div')
+  d.textContent = str
+  return d.innerHTML
 }
 
 function save(data){
