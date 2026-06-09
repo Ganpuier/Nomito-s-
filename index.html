@@ -13,8 +13,22 @@
     padding:48px 24px
   }
   .wrap{
-    max-width:600px;
+    max-width:900px;
     margin:0 auto
+  }
+
+  .main-layout{
+    display:flex;
+    gap:60px;
+    align-items:flex-start
+  }
+  .main-content{
+    flex:1;
+    min-width:0
+  }
+  .sidebar{
+    width:220px;
+    flex-shrink:0
   }
 
   header{
@@ -38,16 +52,46 @@
     margin-left:auto;
     font-size:11px;
     color:#c4b998;
-    cursor:pointer;
-    user-select:none
+    user-select:none;
+    padding:2px 6px
   }
   .todo-badge:hover{color:#b8aa92}
-  .todo-panel{
-    display:none;
-    margin:0 0 48px 0
+  .todo-panel{display:block;margin:0}
+
+  /* sidebar widget */
+  .widget{
+    margin-bottom:32px
   }
-  .todo-panel.show{display:block}
-  .todo-badge{padding:2px 6px}
+  .widget .w-title{
+    font-size:11px;
+    font-weight:600;
+    color:#c4b998;
+    letter-spacing:3px;
+    margin-bottom:14px;
+    padding-bottom:8px;
+    border-bottom:1px solid #ede8e0
+  }
+  .countdown-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:13px;
+    color:#5a5a5a;
+    padding:5px 0
+  }
+  .countdown-item .label{color:#5a5a5a}
+  .countdown-item .days{
+    font-size:13px;
+    font-weight:600;
+    color:#b8aa92
+  }
+  .countdown-item .days.urgent{color:#d4a0a0}
+  .countdown-item .days.pass{color:#d5cdc0}
+
+  @media(max-width:750px){
+    .main-layout{flex-direction:column}
+    .sidebar{width:100%}
+  }
 
   /* ---- todo ---- */
   .todo-input{
@@ -288,17 +332,13 @@
   <header>
     <h1>杂坛</h1>
     <span class="date" id="today"></span>
-    <span class="todo-badge" id="todoBadge" onclick="toggleTodo()"></span>
+    <span class="todo-badge" id="todoBadge"></span>
   </header>
 
-  <div class="todo-panel" id="todoPanel">
-    <input class="todo-input" id="todoInput" placeholder="记一件事...">
-    <div class="todo-count" id="todoCount"></div>
-    <ul class="todo-list" id="todoList"></ul>
-    <div class="todo-actions" id="todoActions"></div>
-  </div>
+  <div class="main-layout">
+    <div class="main-content">
 
-  <hr>
+      <hr>
   <div class="section-title">大创</div>
   <div id="progress">
     <div class="phase">
@@ -569,6 +609,25 @@ GitHub 的接入过程有点曲折。Clash 的端口不是默认的 7890 而是 
 
   </div>
 
+    </div>
+
+    <div class="sidebar">
+      <div class="todo-panel" id="todoPanel">
+        <div class="w-title">待办</div>
+        <input class="todo-input" id="todoInput" placeholder="记一件事...">
+        <div class="todo-count" id="todoCount"></div>
+        <ul class="todo-list" id="todoList"></ul>
+        <div class="todo-actions" id="todoActions"></div>
+      </div>
+
+      <div class="widget">
+        <div class="w-title">倒计时</div>
+        <div id="countdownList"></div>
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
 <script>
@@ -581,13 +640,7 @@ const list = document.getElementById('todoList')
 const count = document.getElementById('todoCount')
 const actions = document.getElementById('todoActions')
 const badge = document.getElementById('todoBadge')
-const panel = document.getElementById('todoPanel')
 const KEY = 'zatan_todos'
-
-function toggleTodo(){
-  panel.classList.toggle('show')
-  if(panel.classList.contains('show')) input.focus()
-}
 
 function load(){
   const data = JSON.parse(localStorage.getItem(KEY) || '[]')
@@ -687,6 +740,29 @@ input.addEventListener('keydown', e => {
 })
 
 load()
+
+// ---- countdown ----
+const deadlines = [
+  {label:'四级考试', date:'2026-06-13'},
+  {label:'大创结题', date:'2027-05-31'},
+]
+function renderCountdown(){
+  const el = document.getElementById('countdownList')
+  const now = new Date()
+  el.innerHTML = deadlines.map(d => {
+    const target = new Date(d.date)
+    const diff = Math.ceil((target - now) / (1000*60*60*24))
+    let cls = 'days'
+    let text
+    if(diff > 0) text = `${diff} 天`
+    else if(diff === 0) text = '今天'
+    else if(diff < 0 && diff > -30) text = `已过 ${-diff} 天`
+    else { cls += ' pass'; text = `已过 ${-diff} 天` }
+    if(diff > 0 && diff <= 7) cls += ' urgent'
+    return `<div class="countdown-item"><span class="label">${d.label}</span><span class="${cls}">${text}</span></div>`
+  }).join('')
+}
+renderCountdown()
 </script>
 </body>
 </html>
