@@ -595,7 +595,7 @@ function load(){
   const undone = data.filter(t => !t.done).length
   const total = data.length
   count.textContent = undone ? `还有 ${undone} 件事` : total ? '都做完了' : ''
-  badge.textContent = undone ? `待办 ${undone}` : total ? '完成 ✓' : ''
+  badge.textContent = undone ? `待办 ${undone}` : total ? '完成 ✓' : '待办 0'
   renderActions(data)
   data.forEach((t,i) => {
     const li = document.createElement('li')
