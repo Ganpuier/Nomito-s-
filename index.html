@@ -139,6 +139,27 @@
     padding-left:0
   }
   .subtask span.done{color:#8f8}
+
+  /* ---- content sections ---- */
+  .sec{margin-top:60px}
+  .sec-title{
+    font-size:12px;
+    font-weight:600;
+    color:#999;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:20px;
+    padding-bottom:8px;
+    border-bottom:1px solid #eee
+  }
+  .entry{font-size:14px;color:#444;line-height:1.8}
+  .entry + .entry{margin-top:10px}
+  .entry .date{font-size:11px;color:#bbb;display:block;margin-bottom:2px}
+  .entry b{font-weight:600;color:#222}
+  .entry .pre{white-space:pre-line;font-size:14px;color:#444;line-height:2;margin:6px 0 16px 0}
+  .quote{font-size:14px;color:#555;line-height:1.8;padding:10px 0;border-bottom:1px solid #f0f0ec}
+  .quote:last-child{border:none}
+  .quote i{color:#999;font-size:12px}
 </style>
 </head>
 <body>
@@ -188,6 +209,135 @@
       </div>
     </div>
   </div>
+
+  <!-- 诗稿 -->
+  <div class="sec">
+    <div class="sec-title">诗稿</div>
+    <div class="entry">
+      <b>《轻轻》</b>
+      <div class="pre">
+在所有无比寂静的黑暗里
+我可以看见
+看见群星
+那星星眨呀眨
+眨着眼睛
+不知为何我看见你
+
+我花光所有的柔软
+触摸你
+但却无法想象你形体
+
+我渴求所谓情绪的真名
+徘徊不定的左右分离
+
+我爱你
+我爱你
+我能不能爱你
+
+或者换个话题
+我能不能想你
+
+追寻意义
+你是何物？
+
+大海深处
+鲸声的回荡里
+会很动听
+
+树林呼吸
+野鹿的眼睛里
+闪着魂灵
+
+天空之外
+彷徨的宇宙里
+飞行
+
+啊 轻轻
+我想轻轻抱着你
+啊 轻轻
+我想轻轻爱着你
+      </div>
+    </div>
+    <div class="entry">
+      <b>《如果有吉他》</b> — 人间的芳草地需要浇水，不必盼着花，不必追着谁
+    </div>
+    <div class="entry">
+      <b>未命名</b> — 你说爱究竟到底如何呢？我翻遍史书不懂得。是卓文君么，一见如故，耳鬓厮磨。亦或者梁山伯，缺你世间无颜色。
+    </div>
+    <div class="entry">
+      <b>《孤歌》</b> — 孤歌里徘徊，愈发愈沉默。我想写首歌，送与百花落。齐齐诵巍峨，不愿渡情河。
+    </div>
+    <div class="entry">
+      <b>《要》</b> — 要平凡，要孤独，要不堪，要脆弱的像个灵魂在不断的发颤。意象堆叠的尽是老生常谈，也无法遮掩我的不安。我在小风小雨中徘徊，任性的不打伞。
+    </div>
+    <div class="entry">
+      <b>《去食堂》</b> — 请让我吐纳呼吸空气里的诗意，捕捉一些雨滴撂在我的碗里——哦呀，满汉全席！
+    </div>
+    <div class="entry">
+      <b>《骤光》</b> — 人造之霓虹浮悬于天际，衰疲于奔命，不抬头；忽然很想点根烟，摸了半天，才发觉自己本就不是烟民。骤光，忽冷暖。
+    </div>
+  </div>
+
+  <!-- 语录 -->
+  <div class="sec">
+    <div class="sec-title">语录</div>
+    <div class="quote">"想晒太阳晒太阳，想干嘛干嘛。实在无聊了，去看首别人的，有想试的就试试，没有就继续歇着。允许停下来的自己。允许狂奔的自己。" <i>— 老姐</i></div>
+    <div class="quote">"我的笑是我的面具，后来变成我的习惯，现在是我的一部分，我认可的一部分。" <i>— 老姐</i></div>
+    <div class="quote">"你的难受我认为是你的经历严重跟不上你的认知导致的。" <i>— 老姐</i></div>
+    <div class="quote">"人间的芳草地需要浇水，不必盼着花，不必追着谁。" <i>— 《如果有吉他》</i></div>
+    <div class="quote">"我爱你，但若包括爱着过去的你与未来的你，这将变成一个难以回答的问题。" <i>— 随笔，2025</i></div>
+    <div class="quote">"你不缺少爱人的能力，缺少的是相信这次会不一样的勇气。" <i>— Claude</i></div>
+    <div class="quote">"世界纷纷扰扰，我们彼此相伴，静看吵吵闹闹。" <i>— 2026-05-29</i></div>
+    <div class="quote">"我们闭上眼睛，假装死去——所谓失眠。" <i>— 2026-05-29</i></div>
+    <div class="quote">"不热情就叫冷漠。" <i>— 阮星博</i></div>
+  </div>
+
+  <!-- 杂记 -->
+  <div class="sec">
+    <div class="sec-title">杂记</div>
+
+    <div class="entry">
+      <span class="date">2026-06-07</span>
+      <b>NSGA-II 重写</b><br>
+      又把 baseline 翻出来重写了。弃光逻辑、电网约束、代码模块化，全改了。跑出来成本 696 元、碳排放 814 kg。在 GitHub 上建了个新仓库存代码。
+    </div>
+    <div class="entry">
+      <span class="date">2026-05-29</span>
+      <b>杂坛翻新</b><br>
+      把毛玻璃卡片整好了，自拍裁成圆形。配了 GitHub，折腾 Clash 端口。写了《写点东西》。
+    </div>
+    <div class="entry">
+      <span class="date">2026-05-28</span>
+      <b>三环学习框架</b><br>
+      和 Claude 搭了一套学习系统。高数不要从第一页读教材，英语只做真题。梳理了自己的情感模式，被说了一句无法反驳的话。
+    </div>
+    <div class="entry">
+      <span class="date">2026-05-26</span>
+      <b>大创升国家级</b><br>
+      通过校级审批，升级国家级。项目名称很长，经费 8000 块，周期到明年五月。老师压的活，但既然过了就认真做。
+    </div>
+    <div class="entry">
+      <span class="date">2026-05-25</span>
+      <b>写小说、差点花 13999</b><br>
+      写了《A老师与王悦月》——三层叙事互相渗漏的写法。差点买了学姐推荐的 Java 全栈网课，最后选了嵌入式方向。加实验室被当牛马使，有点挫败。
+    </div>
+    <div class="entry">
+      <span class="date">2025-12-17</span>
+      <b>老姐回信了</b><br>
+      落款"无理公设"。她说我的忧愁是"觉醒"，学了三年基督教但爱上了人性。"允许停下来的自己。允许狂奔的自己。"被看到，没有被评判。
+    </div>
+    <div class="entry">
+      <span class="date">2025-12-04</span>
+      <b>给老姐写信</b><br>
+      1597 字。讲了高中的事、七天恋爱、讨好型人格。最后写"想要晒晒太阳呢"。
+    </div>
+    <div class="entry">
+      <span class="date">2025-11</span>
+      <b>性压抑与爱无能</b><br>
+      长篇随笔。人之所以是孤岛，就在于岛中被巨大外表所掩盖的事实，不容任何人窥探。"我爱你，但若包括爱着过去的你与未来的你，这将变成一个难以回答的问题。"
+    </div>
+  </div>
+
 </div>
 <script>
 // ---- todo ----
