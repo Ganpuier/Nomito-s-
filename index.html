@@ -644,6 +644,17 @@
     <div class="section-title" id="notes">杂记</div>
 
     <details class="collapsible">
+      <summary><span class="arrow">▶</span><span class="date">2026-06-11</span><b>买了域名，配了 HTTPS，杂坛正式上线</b></summary>
+      <div class="full">下午继续折腾。热榜从 GitHub Pages 拉服务器数据时被浏览器拦截了——因为 Pages 是 HTTPS，服务器是 HTTP，混合内容报错。<br><br>
+
+      解决方法是买个域名配 HTTPS。注册了 za-tan.top，腾讯云买的，续费也不贵。DNSPod 里加了 A 记录指向服务器，然后上 Let's Encrypt 免费证书，nginx 自动配好。<br><br>
+
+      现在 https://za-tan.top 就是杂坛的正式地址了，有域名有 HTTPS，像个正经网站了。GitHub Pages 那边也改了 fetch 地址，HTTPS 到 HTTPS，不再被拦截。<br><br>
+
+      一天之内：买服务器 → 部署爬虫 → 买域名 → 配 HTTPS。挺充实。</div>
+    </details>
+
+    <details class="collapsible">
       <summary><span class="arrow">▶</span><span class="date">2026-06-11</span><b>搭了个服务器，不用输密码就能连</b></summary>
       <div class="full">今天干了件一直想干的事——买了个云服务器。雨云香港节点，19 块钱一个月，2 核 2G 30G 硬盘，足够用了，还不用备案。<br><br>
 
