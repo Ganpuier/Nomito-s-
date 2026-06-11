@@ -644,6 +644,15 @@
     <div class="section-title" id="notes">杂记</div>
 
     <details class="collapsible">
+      <summary><span class="arrow">▶</span><span class="date">2026-06-11</span><b>搭了个服务器，不用输密码就能连</b></summary>
+      <div class="full">今天干了件一直想干的事——买了个云服务器。雨云香港节点，19 块钱一个月，2 核 2G 30G 硬盘，足够用了，还不用备案。<br><br>
+
+         先在服务器上把爬知乎热榜的脚本跑起来了，每 5 分钟自动更新。配成 systemd 服务，开机自启，挂了自动重启。然后在前端加了一行 CORS 头，GitHub Pages 的网站直接从服务器拉热榜数据，不用每次手动更新了。<br><br>
+
+         最烦的就是每次 SSH 都要输密码。配了密钥之后，桌面上放了个"连服务器.bat"，双击就连上了，终端里直接打 zatan 也行。</div>
+    </details>
+
+    <details class="collapsible">
       <summary><span class="arrow">▶</span><span class="date">2026-06-07</span><b>NSGA-II 重写</b></summary>
       <div class="full">又把 baseline 翻出来重写了。弃光逻辑、电网约束、代码模块化，全改了。跑出来成本 696 元、碳排放 814 kg。在 GitHub 上建了个新仓库放代码。</div>
     </details>
