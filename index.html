@@ -29,7 +29,7 @@
   }
 
   *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth}.page{display:none}.page.active{display:block}
 
   /* ---- entrance animation ---- */
   .fade-in{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
@@ -575,20 +575,23 @@
   </header>
 
   <div class="nav">
-    <a href="#project">大创</a>
-    <a href="#poems">诗稿</a>
-    <a href="#quotes">语录</a>
-    <a href="#music">歌单</a>
-    <a href="#notes">杂记</a>
+    <a href="#/project">大创</a>
+    <a href="#/poems">诗稿</a>
+    <a href="#/quotes">语录</a>
+    <a href="#/music">歌单</a>
+    <a href="#/notes">杂记</a>
   </div>
 
   <div class="main-layout">
     <div class="main-content">
 
+  <div class="page active" data-page="project">
       <hr class="fade-in">
   <div class="section-title fade-in" id="project">大创</div>
   <div id="progress"></div>
+  </div>
 
+  <div class="page" data-page="poems">
   <hr>
 
   <!-- 诗稿 -->
@@ -695,9 +698,11 @@
     </details>
 
   </div>
+  </div>
 
   <hr>
 
+  <div class="page" data-page="quotes">
   <!-- 语录 -->
   <div class="content-block fade-in fade-in-delay-1">
     <div class="section-title" id="quotes">语录</div>
@@ -711,9 +716,11 @@
     <div class="line">"我们闭上眼睛，假装死去——所谓失眠。" <i>— 2026-05-29</i></div>
     <div class="line">"不热情就叫冷漠。" <i>— 阮星博</i></div>
   </div>
+  </div>
 
   <hr>
 
+  <div class="page" data-page="music">
   <!-- 歌单 -->
   <div class="content-block fade-in fade-in-delay-2">
     <div class="section-title" id="music">歌单</div>
@@ -725,9 +732,11 @@
     <div style="font-size:12px;color:var(--accent2);margin-bottom:8px;letter-spacing:2px">我的歌单</div>
     <div id="nemPlaylists" style="display:flex;flex-direction:column;gap:4px"></div>
   </div>
+  </div>
 
   <hr>
 
+  <div class="page" data-page="notes">
   <!-- 杂记 -->
   <div class="content-block fade-in fade-in-delay-2">
     <div class="section-title" id="notes">杂记</div>
@@ -906,6 +915,7 @@ GitHub 的接入过程有点曲折。Clash 的端口不是默认的 7890 而是 
 我爱你，但若包括爱着过去的你与未来的你，这将变成一个难以回答的问题。</div>
     </details>
 
+  </div>
   </div>
 
     </div>
@@ -1274,16 +1284,24 @@ function fetchHotList(){
 fetchHotList()
 setInterval(fetchHotList, 5 * 60 * 1000)
 
-// ---- scroll reveal ----
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('show') })
-}, {threshold:.08})
+// ---- hash routing ----
+function navigateTo(p){
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'))
+  const target = document.querySelector(`.page[data-page="${p}"]`) || document.querySelector('.page[data-page="project"]')
+  if(target){ target.classList.add('active'); target.querySelectorAll('.fade-in').forEach(el => el.classList.add('show')) }
+}
+function onHash(){ const p = location.hash.replace('#/','') || 'project'; navigateTo(p) }
+window.addEventListener('hashchange', onHash)
+onHash()
 
 // auto-show header immediately on load
 document.querySelector('header.fade-in').classList.add('show')
 
-// observe all fade-in elements
-document.querySelectorAll('.fade-in:not(header)').forEach(el => observer.observe(el))
+// sidebar scroll reveal (pages shown via hash routing)
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('show') })
+}, {threshold:.08})
+document.querySelectorAll('.sidebar .fade-in').forEach(el => observer.observe(el))
 
 // ---- dark mode ----
 const themeBtn = document.getElementById('themeBtn')
