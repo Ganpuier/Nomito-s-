@@ -408,6 +408,45 @@
   .sub span{transition:color .3s}
   .sub span:hover{color:#b8aa92}
 
+  /* ---- dachuang dashboard ---- */
+  .proj-metrics{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+  .proj-metrics .card{
+    flex:1;min-width:120px;padding:12px 14px;
+    border:1px solid #ede8e0;border-radius:8px;
+    text-align:center;transition:transform .3s
+  }
+  .proj-metrics .card:hover{transform:translateY(-2px)}
+  .proj-metrics .card .num{font-size:22px;font-weight:600;color:#3d3d3d}
+  .proj-metrics .card .lbl{font-size:11px;color:#b0a898;margin-top:4px}
+  .proj-badge{
+    display:inline-block;font-size:11px;padding:2px 10px;
+    border-radius:10px;margin-right:6px
+  }
+  .proj-badge.national{background:#f0eae2;color:#8a7a6a}
+  .proj-badge.phase{background:#ede8e0;color:#a89878}
+  .proj-badge.done{background:#e8f0e8;color:#7a9a7a}
+  .proj-badge.active{background:#f0ece0;color:#b8a878}
+  .proj-tl{position:relative;padding-left:22px;margin:16px 0 8px}
+  .proj-tl::before{
+    content:'';position:absolute;left:8px;top:4px;bottom:4px;
+    width:2px;background:#ede8e0
+  }
+  .proj-tl .milestone{
+    position:relative;padding:6px 0 6px 10px;font-size:13px;color:#888
+  }
+  .proj-tl .milestone::before{
+    content:'';position:absolute;left:-16px;top:10px;
+    width:8px;height:8px;border-radius:50%;
+    background:#ddd;border:2px solid #fff
+  }
+  .proj-tl .milestone.done{color:#7a9a7a}
+  .proj-tl .milestone.done::before{background:#7a9a7a}
+  .proj-tl .milestone.active{color:#b8a878;font-weight:600}
+  .proj-tl .milestone.active::before{background:#b8a878;width:10px;height:10px;left:-17px;top:9px}
+  .proj-tl .milestone .tl-date{font-size:11px;color:#bbb;margin-left:8px}
+  .proj-tl .milestone .tl-tag{font-size:10px;margin-left:6px;padding:1px 6px;border-radius:8px;background:#f0eae2;color:#a89878}
+  .proj-tl .milestone.done .tl-tag{background:#e8f0e8;color:#7a9a7a}
+
   /* ---- content ---- */
   .content-block{margin-top:48px}
   .content-block .line{
@@ -1052,10 +1091,48 @@ function loadProgress(){
   return saved
 }
 
+function overallPct(data){
+  const total = data.reduce((s,p) => s + p.pct, 0)
+  return Math.round(total / data.length)
+}
 function renderProgress(){
   const data = loadProgress()
+  const total = overallPct(data)
   const el = document.getElementById('progress')
-  el.innerHTML = data.map((p,i) => {
+
+  // metrics dashboard
+  const metrics = `
+    <div class="proj-metrics">
+      <div class="card"><div class="num">${total}%</div><div class="lbl">整体进度</div></div>
+      <div class="card"><div class="num">¥696</div><div class="lbl">优化成本/日</div></div>
+      <div class="card"><div class="num">814kg</div><div class="lbl">碳排放/日</div></div>
+      <div class="card"><div class="num">¥8,000</div><div class="lbl">经费</div></div>
+    </div>
+    <div style="font-size:12px;color:#b0a898;margin-bottom:12px">
+      <span class="proj-badge national">国家级</span>
+      <span class="proj-badge active">2026.05 — 2027.05</span>
+      <span class="proj-badge phase">负责人</span>
+    </div>`
+
+  // timeline
+  const tlData = [
+    {label:'申报审批', date:'2026.04', done:true, tag:'获批'},
+    {label:'NSGA-II 复现', date:'2026.05-06', done:true, tag:'完成'},
+    {label:'建筑群耦合建模', date:'2026.06-07', done:false, tag:'进行中'},
+    {label:'LLM 数据融合', date:'2026.07-09', done:false, tag:''},
+    {label:'负荷预测与需求响应', date:'2026.09-11', done:false, tag:''},
+    {label:'多目标优化调度', date:'2026.11-2027.02', done:false, tag:''},
+    {label:'结题验收', date:'2027.03-05', done:false, tag:''},
+  ]
+  const timeline = `<div class="proj-tl">${tlData.map((t,i) => {
+    let cls = 'milestone'
+    if(t.done) cls += ' done'
+    if(i === data.findIndex(p => p.pct > 0 && p.pct < 100)) cls += ' active'
+    return `<div class="${cls}">${t.label}<span class="tl-date">${t.date}</span>${t.tag ? `<span class="tl-tag">${t.tag}</span>` : ''}</div>`
+  }).join('')}</div>`
+
+  // progress phases
+  const phases = data.map((p,i) => {
     const subsHtml = p.subs.map((s,j) =>
       `<span class="${s.done?'done':''}" data-p="${i}" data-s="${j}">${s.done?'✓':'○'} ${s.label}</span>`
     ).join('')
@@ -1068,6 +1145,8 @@ function renderProgress(){
       ${subsHtml ? `<div class="sub">${subsHtml}</div>` : ''}
     </div>`
   }).join('')
+
+  el.innerHTML = metrics + timeline + phases
 
   // click to edit percentage
   el.querySelectorAll('.pct').forEach(span => {
