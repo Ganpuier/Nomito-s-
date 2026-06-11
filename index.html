@@ -119,6 +119,8 @@
     line-height:1
   }
   .theme-btn:hover{color:var(--accent);transform:rotate(15deg)}
+  .music-link{font-size:13px;color:var(--accent2);padding:4px 0;border-bottom:1px solid var(--border2);display:flex;gap:6px;text-decoration:none;transition:color .3s}
+  .music-link:hover{color:var(--accent)}
 
   /* sidebar widget */
   .widget{
@@ -1311,10 +1313,10 @@ const songs = [
 const musicEl = document.getElementById('musicList')
 if(musicEl){
   musicEl.innerHTML = songs.map(s =>
-    `<div style="font-size:13px;color:var(--accent2);padding:4px 0;border-bottom:1px solid var(--border2);display:flex;gap:6px">
+    `<a href="https://music.163.com/#/search/m/?s=${encodeURIComponent(s.title + ' ' + s.artist)}" target="_blank" rel="noopener" class="music-link">
       <span style="flex:1">${s.title}</span>
       <span style="color:var(--sub);font-size:12px">${s.artist}</span>
-    </div>`
+    </a>`
   ).join('')
 }
 
