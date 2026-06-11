@@ -1124,7 +1124,7 @@ function fetchHotList(){
   // Abort if fetch takes >3s (prevents hanging on file://)
   const ctrl = new AbortController()
   setTimeout(() => ctrl.abort(), 3000)
-  fetch('http://162.251.93.199:8080/hotlist.json?_t=' + Date.now(), {signal: ctrl.signal})
+  fetch('https://za-tan.top/hotlist.json?_t=' + Date.now(), {signal: ctrl.signal})
     .then(r => r.json())
     .then(renderHotList)
     .catch(() => {})
