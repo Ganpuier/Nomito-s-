@@ -562,7 +562,16 @@
   @media(max-width:500px){
     body{padding:32px 16px}
     header{margin-bottom:12px}
-  }
+  .comment-form{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+  .comment-name,.comment-input{padding:8px 0;border:none;border-bottom:1px solid var(--bg3);background:transparent;font-size:13px;color:var(--text2);font-family:inherit;outline:none}
+  .comment-input{resize:vertical;min-height:60px}
+  .comment-btn{align-self:flex-end;padding:6px 20px;border:1px solid var(--accent2);border-radius:4px;background:transparent;color:var(--accent2);cursor:pointer;font-size:13px;font-family:inherit;transition:all .3s}
+  .comment-btn:hover{background:var(--accent2);color:var(--bg)}
+  .comment-item{padding:12px 0;border-bottom:1px solid var(--border2);font-size:13px}
+  .comment-item .meta{display:flex;gap:8px;margin-bottom:4px;font-size:12px}
+  .comment-item .name{font-weight:600;color:var(--accent2)}
+  .comment-item .time{color:var(--date)}
+  .comment-item .text{color:var(--text4);line-height:1.7}
 </style>
 </head>
 <body>
@@ -580,6 +589,7 @@
     <a href="#/quotes">语录</a>
     <a href="#/music">歌单</a>
     <a href="#/notes">杂记</a>
+    <a href="#/comments">留言</a>
   </div>
 
   <div class="main-layout">
@@ -919,6 +929,19 @@ GitHub 的接入过程有点曲折。Clash 的端口不是默认的 7890 而是 
 我爱你，但若包括爱着过去的你与未来的你，这将变成一个难以回答的问题。</div>
     </details>
 
+  </div>
+  </div>
+
+  <div class="page" data-page="comments">
+  <hr>
+  <div class="content-block fade-in">
+    <div class="section-title">留言</div>
+    <div class="comment-form">
+      <input class="comment-name" id="commentName" placeholder="你的名字（可选）" maxlength="20">
+      <textarea class="comment-input" id="commentInput" placeholder="说点什么..." maxlength="500"></textarea>
+      <button class="comment-btn" id="commentBtn">发送</button>
+    </div>
+    <div id="commentList" style="margin-top:16px"></div>
   </div>
   </div>
 
@@ -1293,6 +1316,7 @@ function navigateTo(p){
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'))
   const target = document.querySelector(`.page[data-page="${p}"]`) || document.querySelector('.page[data-page="project"]')
   if(target){ target.classList.add('active'); target.querySelectorAll('.fade-in').forEach(el => el.classList.add('show')) }
+  if(p === 'comments') loadComments()
 }
 function onHash(){ const p = location.hash.replace('#/','') || 'project'; navigateTo(p) }
 window.addEventListener('hashchange', onHash)
@@ -1381,6 +1405,32 @@ fetch('https://za-tan.top/nem_data.json?_t=' + Date.now())
 const busuanzi = document.createElement('script')
 busuanzi.src = '//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js'
 busuanzi.async = true
+// ---- comments ----
+function loadComments(){
+  fetch('https://za-tan.top/api/comments?_t='+Date.now())
+    .then(r => r.json())
+    .then(d => {
+      const el = document.getElementById('commentList')
+      if(!el) return
+      if(!d || !d.length){ el.innerHTML = '<div style="color:var(--sub);font-size:13px">还没有留言</div>'; return }
+      el.innerHTML = d.map(c =>
+        '<div class="comment-item"><div class="meta"><span class="name">'+escapeHtml(c.name)+'</span><span class="time">'+escapeHtml(c.time)+'</span></div><div class="text">'+escapeHtml(c.content).replace(/\n/g,'<br>')+'</div></div>'
+      ).join('')
+    }).catch(() => {})
+}
+document.getElementById('commentBtn').addEventListener('click', function(){
+  const name = document.getElementById('commentName').value.trim()
+  const content = document.getElementById('commentInput').value.trim()
+  if(!content) return
+  const btn = this; btn.disabled = true; btn.textContent = '发送中...'
+  fetch('https://za-tan.top/api/comments', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({name: name || '匿名', content})
+  }).then(r => r.json()).then(d => {
+    if(d.ok){ document.getElementById('commentInput').value = ''; loadComments() }
+  }).finally(() => { btn.disabled = false; btn.textContent = '发送' })
+})
 document.body.appendChild(busuanzi)
 </script>
 <span id="busuanzi_container_page_pv" style="display:block;text-align:center;font-size:11px;color:var(--sub);margin-top:40px">
