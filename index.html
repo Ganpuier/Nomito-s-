@@ -725,7 +725,11 @@
   <div class="content-block fade-in fade-in-delay-2">
     <div class="section-title" id="music">歌单</div>
     <div style="font-size:13px;color:var(--text4);margin-bottom:12px">
-      来自网易云音乐，点击歌名打开收听。
+      来自网易云音乐，点击歌名在线播放。
+    </div>
+    <div id="nemPlayer" style="margin-top:16px;display:none">
+      <div style="font-size:12px;color:var(--accent2);margin-bottom:8px;letter-spacing:2px">正在播放</div>
+      <div id="nemPlayerContainer"></div>
     </div>
     <div style="font-size:12px;color:var(--accent2);margin-bottom:8px;letter-spacing:2px">最近听过</div>
     <div id="nemRecent" style="display:flex;flex-direction:column;gap:4px;margin-bottom:16px"></div>
@@ -1322,25 +1326,47 @@ function updateThemeBtn(){
 themeBtn.addEventListener('click', toggleTheme)
 
 // ---- netease music ----
+function playNemSong(id){
+  document.getElementById('nemPlayer').style.display = 'block'
+  document.getElementById('nemPlayerContainer').innerHTML =
+    `<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height=66 src="https://music.163.com/outchain/player?type=2&id=${id}&auto=1&height=66"></iframe>`
+}
+function playNemPlaylist(id){
+  document.getElementById('nemPlayer').style.display = 'block'
+  document.getElementById('nemPlayerContainer').innerHTML =
+    `<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height=430 src="https://music.163.com/outchain/player?type=0&id=${id}&auto=1&height=430"></iframe>`
+}
 function renderNem(data){
   const recentEl = document.getElementById('nemRecent')
   const plEl = document.getElementById('nemPlaylists')
   if(!recentEl || !plEl) return
 
   recentEl.innerHTML = (data.recent||[]).map(s =>
-    `<a href="https://music.163.com/#/song?id=${s.id}" target="_blank" rel="noopener" class="music-link">
+    `<div class="music-link" data-nem="song" data-id="${s.id}">
       <span style="flex:1">${s.name}</span>
       <span style="color:var(--sub);font-size:12px">${s.artists}</span>
-    </a>`
+      <a href="https://music.163.com/#/song?id=${s.id}" target="_blank" rel="noopener" style="color:var(--sub);font-size:11px;text-decoration:none;margin-left:auto">↗</a>
+    </div>`
   ).join('') || '<div style="color:var(--sub);font-size:13px">暂无数据</div>'
 
   plEl.innerHTML = (data.playlists||[]).map(p =>
-    `<a href="https://music.163.com/#/playlist?id=${p.id}" target="_blank" rel="noopener" class="music-link">
+    `<div class="music-link" data-nem="playlist" data-id="${p.id}">
       <span style="flex:1">${p.name}</span>
       <span style="color:var(--sub);font-size:12px">${p.count}首</span>
-    </a>`
+      <a href="https://music.163.com/#/playlist?id=${p.id}" target="_blank" rel="noopener" style="color:var(--sub);font-size:11px;text-decoration:none;margin-left:auto">↗</a>
+    </div>`
   ).join('') || '<div style="color:var(--sub);font-size:13px">暂无数据</div>'
 }
+document.getElementById('nemRecent').addEventListener('click', function(e){
+  const item = e.target.closest('[data-nem]')
+  if(!item || e.target.tagName === 'A') return
+  if(item.dataset.nem === 'song') playNemSong(item.dataset.id)
+})
+document.getElementById('nemPlaylists').addEventListener('click', function(e){
+  const item = e.target.closest('[data-nem]')
+  if(!item || e.target.tagName === 'A') return
+  if(item.dataset.nem === 'playlist') playNemPlaylist(item.dataset.id)
+})
 
 // default data for immediate display
 renderNem({"playlists":[{"id":6693515032,"name":"酒足饭饱OK喜欢的音乐","count":582}],"recent":[{"name":"思念是一种病","id":0,"artists":"张震岳,蔡健雅"}]})
