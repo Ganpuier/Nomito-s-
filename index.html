@@ -6,11 +6,24 @@
 <title>杂坛</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+
+  /* ---- entrance animation ---- */
+  .fade-in{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .fade-in.show{opacity:1;transform:translateY(0)}
+  .fade-in-delay-1{transition-delay:.1s}
+  .fade-in-delay-2{transition-delay:.2s}
+  .fade-in-delay-3{transition-delay:.3s}
+  .fade-in-delay-4{transition-delay:.4s}
+  .fade-in-delay-5{transition-delay:.5s}
+
   body{
-    background:#faf6f0;
+    background:#fcfaf7;
     font-family:"Noto Serif SC","Source Han Serif SC","Microsoft YaHei",serif;
-    color:#3d3d3d;
-    padding:48px 24px
+    color:#2d2d2d;
+    padding:48px 24px;
+    font-size:15px;
+    line-height:1.8
   }
   .wrap{
     max-width:900px;
@@ -41,17 +54,34 @@
   header h1{
     font-size:13px;
     font-weight:400;
-    color:#c4b998;
-    letter-spacing:6px
+    color:#a89878;
+    letter-spacing:6px;
+    cursor:default;
+    transition:color .3s
   }
+  header h1:hover{color:#b8aa92}
   header .date{
     font-size:12px;
-    color:#d5cdc0
+    color:#b0a898;
+    transition:color .3s
   }
+
+  /* ---- nav ---- */
+  .nav{display:flex;gap:0;margin-bottom:24px;flex-wrap:wrap}
+  .nav a{
+    font-size:11px;
+    color:#b0a898;
+    text-decoration:none;
+    letter-spacing:2px;
+    padding:6px 14px 6px 0;
+    transition:color .3s,transform .3s;
+    display:inline-block
+  }
+  .nav a:hover{color:#b8aa92;transform:translateY(-1px)}
   .todo-badge{
     margin-left:auto;
     font-size:11px;
-    color:#c4b998;
+    color:#a89878;
     user-select:none;
     padding:2px 6px
   }
@@ -60,33 +90,127 @@
 
   /* sidebar widget */
   .widget{
-    margin-bottom:32px
+    margin-bottom:32px;
+    transition:transform .3s ease
   }
+  .widget:hover{transform:translateY(-2px)}
   .widget .w-title{
     font-size:11px;
     font-weight:600;
-    color:#c4b998;
+    color:#a89878;
     letter-spacing:3px;
     margin-bottom:14px;
     padding-bottom:8px;
-    border-bottom:1px solid #ede8e0
+    border-bottom:1px solid #ede8e0;
+    transition:color .3s
   }
+  .widget:hover .w-title{color:#b8aa92}
   .countdown-item{
     display:flex;
     justify-content:space-between;
     align-items:baseline;
     font-size:13px;
-    color:#5a5a5a;
-    padding:5px 0
+    color:#444;
+    padding:6px 0;
+    transition:transform .3s ease,padding-left .3s ease
   }
-  .countdown-item .label{color:#5a5a5a}
+  .countdown-item:hover{transform:translateX(4px)}
+  .countdown-item .label{color:#444;transition:color .3s}
+  .countdown-item:hover .label{color:#3d3d3d}
   .countdown-item .days{
     font-size:13px;
     font-weight:600;
-    color:#b8aa92
+    color:#b8aa92;
+    transition:transform .3s,color .3s
   }
+  .countdown-item:hover .days{transform:scale(1.05)}
   .countdown-item .days.urgent{color:#d4a0a0}
-  .countdown-item .days.pass{color:#d5cdc0}
+  .countdown-item .days.urgent{animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .countdown-item .days.pass{color:#b0a898}
+  .countdown-item .del{
+    color:#e8e0d6;
+    font-size:14px;
+    cursor:pointer;
+    padding:0 4px;
+    transition:color .3s,transform .3s;
+    flex-shrink:0
+  }
+  .countdown-item .del:hover{color:#d4a0a0;transform:scale(1.2)}
+  .countdown-input-row{
+    display:flex;
+    gap:6px;
+    margin-top:8px;
+    align-items:center
+  }
+  .countdown-input-row input{
+    border:none;
+    border-bottom:1px solid #e8e0d6;
+    background:transparent;
+    font-size:12px;
+    color:#3d3d3d;
+    font-family:inherit;
+    outline:none;
+    padding:4px 0;
+    transition:border-color .3s
+  }
+  .countdown-input-row input:focus{border-color:#b8aa92}
+  .countdown-input-row .cd-label{flex:1;min-width:0}
+  .countdown-input-row .cd-date{width:105px}
+  .countdown-input-row .cd-add{
+    background:none;
+    border:1px solid #e8e0d6;
+    border-radius:4px;
+    color:#b0a898;
+    font-size:16px;
+    cursor:pointer;
+    padding:2px 8px;
+    transition:all .3s;
+    font-family:inherit;
+    line-height:1
+  }
+  .countdown-input-row .cd-add:hover{color:#b8aa92;border-color:#b8aa92}
+
+  /* ---- hot list ---- */
+  .hot-list{list-style:none;margin:0;padding:0}
+  .hot-list li{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    padding:6px 0;
+    font-size:13px;
+    color:#444;
+    line-height:1.6;
+    border-bottom:1px solid #f0eae2;
+    transition:transform .3s,color .3s
+  }
+  .hot-list li:first-child{padding-top:0}
+  .hot-list li:hover{transform:translateX(3px);color:#3d3d3d}
+  .hot-list .h-rank{
+    font-size:11px;
+    font-weight:600;
+    color:#a89878;
+    flex-shrink:0;
+    width:16px;
+    text-align:right
+  }
+  .hot-list .h-rank.top3{color:#d4a0a0}
+  .hot-list .h-title{flex:1;min-width:0}
+  .hot-list .h-heat{
+    font-size:11px;
+    color:#b0a898;
+    flex-shrink:0
+  }
+  .hot-list a{
+    color:inherit;
+    text-decoration:none;
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+    width:100%
+  }
+  .hot-list a:hover .h-title{color:#b8aa92}
+  .hot-list .h-loading{font-size:12px;color:#b0a898}
 
   @media(max-width:750px){
     .main-layout{flex-direction:column}
@@ -107,10 +231,10 @@
     font-family:inherit;
     margin-bottom:0
   }
-  .todo-input::placeholder{color:#d5cdc0}
+  .todo-input::placeholder{color:#b0a898}
   .todo-count{
     font-size:11px;
-    color:#d5cdc0;
+    color:#b0a898;
     margin-bottom:16px
   }
   .todo-list{list-style:none}
@@ -120,10 +244,12 @@
     gap:8px;
     padding:6px 0;
     font-size:13px;
-    color:#5a5a5a;
+    color:#444;
     cursor:pointer;
-    border-bottom:1px solid #f0eae2
+    border-bottom:1px solid #f0eae2;
+    transition:transform .3s ease,opacity .3s ease
   }
+  .todo-list li:hover{transform:translateX(4px)}
   .todo-list li:first-child{border-top:1px solid #f0eae2}
   .todo-list li .ck{
     width:18px;height:18px;
@@ -134,33 +260,40 @@
     align-items:center;
     justify-content:center;
     font-size:11px;
-    transition:.2s
+    transition:all .3s ease
   }
+  .todo-list li .ck:hover{transform:scale(1.15);border-color:#b8aa92}
   .todo-list li.done .ck{
     background:#d4c5a9;
     border-color:#d4c5a9
   }
   .todo-list li.done .ck::after{content:"✓"}
+  .todo-list li.done{
+    transition:all .4s ease
+  }
   .todo-list li.done .txt{
     text-decoration:line-through;
-    color:#c4b998
+    color:#a89878
   }
+  .todo-list li.done:hover{opacity:.7}
   .todo-list li .del{
     margin-left:6px;
     color:#e8e0d6;
     font-size:14px;
     cursor:pointer;
-    padding:0 4px
+    padding:0 4px;
+    transition:color .3s,transform .3s
   }
-  .todo-list li .del:hover{color:#d4c5a9}
+  .todo-list li .del:hover{color:#d4c5a9;transform:scale(1.2)}
   .todo-list li .move{
     color:#e8e0d6;
     font-size:11px;
     cursor:pointer;
     padding:0 2px;
-    user-select:none
+    user-select:none;
+    transition:color .3s,transform .3s
   }
-  .todo-list li .move:hover{color:#c4b998}
+  .todo-list li .move:hover{color:#a89878;transform:scale(1.3)}
   .todo-actions{
     display:flex;
     gap:16px;
@@ -170,7 +303,7 @@
   .todo-actions button{
     background:none;
     border:none;
-    color:#c4b998;
+    color:#a89878;
     cursor:pointer;
     font-size:12px;
     font-family:inherit;
@@ -196,13 +329,18 @@
   .section-title{
     font-size:11px;
     font-weight:600;
-    color:#c4b998;
+    color:#a89878;
     letter-spacing:3px;
     margin-bottom:20px
   }
   .phase{
-    margin-bottom:18px
+    margin-bottom:18px;
+    transition:transform .3s ease,box-shadow .3s ease;
+    padding:8px;
+    border-radius:6px;
+    margin-bottom:10px
   }
+  .phase:hover{transform:translateX(4px);box-shadow:0 0 0 1px #ede8e0}
   .phase-head{
     display:flex;
     justify-content:space-between;
@@ -216,7 +354,23 @@
   }
   .phase-head .pct{
     font-size:12px;
-    color:#c4b998
+    color:#a89878;
+    cursor:pointer;
+    transition:color .3s;
+    user-select:none
+  }
+  .phase-head .pct:hover{color:#b8aa92}
+  .pct-input{
+    width:48px;
+    border:none;
+    border-bottom:1px solid #d4c5a9;
+    background:transparent;
+    font-size:12px;
+    color:#a89878;
+    font-family:inherit;
+    outline:none;
+    text-align:right;
+    padding:0
   }
   .bar{
     height:4px;
@@ -229,60 +383,56 @@
     height:100%;
     background:#b8aa92;
     border-radius:2px;
-    transition:width .3s
+    transition:width .8s ease;
+    position:relative;
+    overflow:hidden
   }
+  .bar-fill::after{
+    content:'';
+    position:absolute;
+    top:0;left:-100%;
+    width:60%;
+    height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+    animation:shimmer 3s infinite
+  }
+  @keyframes shimmer{to{left:150%}}
   .sub{
     font-size:11px;
-    color:#d5cdc0;
+    color:#b0a898;
     display:flex;
     gap:12px;
     flex-wrap:wrap
   }
   .sub .done{color:#b8aa92}
+  .sub span{transition:color .3s}
+  .sub span:hover{color:#b8aa92}
 
   /* ---- content ---- */
   .content-block{margin-top:48px}
-  .content-block .entry{
-    font-size:14px;
-    color:#555;
-    line-height:1.9;
-    margin-bottom:24px
-  }
-  .content-block .entry:last-child{margin-bottom:0}
-  .content-block .entry .date{
-    font-size:11px;
-    color:#d5cdc0;
-    display:block;
-    margin-bottom:2px
-  }
-  .content-block .entry b{
-    font-weight:600;
-    color:#3d3d3d
-  }
-  .content-block .entry .full{
-    white-space:pre-line;
-    font-size:14px;
-    color:#555;
-    line-height:2;
-    margin-top:6px
-  }
   .content-block .line{
-    font-size:14px;
-    color:#5a5a5a;
-    line-height:1.9;
+    font-size:15px;
+    color:#444;
+    line-height:2;
     padding:10px 0;
-    border-bottom:1px solid #f0eae2
+    border-bottom:1px solid #f0eae2;
+    transition:transform .3s ease,padding-left .3s ease,color .3s
+  }
+  .content-block .line:hover{
+    transform:translateX(6px);
+    color:#3d3d3d
   }
   .content-block .line:first-child{border-top:1px solid #f0eae2}
   .content-block .line:last-child{border:none}
   .content-block .line i{
-    color:#c4b998;
+    color:#a89878;
     font-size:12px
   }
 
   /* ---- collapsible ---- */
   .collapsible{
-    margin-bottom:0
+    margin-bottom:0;
+    transition:transform .3s ease
   }
   .collapsible summary{
     cursor:pointer;
@@ -290,35 +440,50 @@
     display:flex;
     align-items:baseline;
     gap:8px;
-    padding:4px 0
+    padding:6px 0;
+    border-radius:4px;
+    transition:background .3s ease,padding-left .3s ease
+  }
+  .collapsible summary:hover{
+    background:#f5f0e8;
+    padding-left:8px
   }
   .collapsible summary::-webkit-details-marker{display:none}
   .collapsible summary .arrow{
     font-size:10px;
-    color:#d5cdc0;
-    transition:transform .2s;
+    color:#b0a898;
+    transition:transform .3s ease,color .3s;
     flex-shrink:0
   }
   .collapsible[open] summary .arrow{
-    transform:rotate(90deg)
+    transform:rotate(90deg);
+    color:#b8aa92
   }
   .collapsible summary .date{
     font-size:11px;
-    color:#d5cdc0
+    color:#b0a898;
+    transition:color .3s
   }
   .collapsible summary b{
     font-weight:600;
-    color:#3d3d3d;
-    font-size:14px
+    color:#2d2d2d;
+    font-size:15px;
+    transition:color .3s
   }
+  .collapsible summary:hover b{color:#a89878}
   .collapsible .full{
     white-space:pre-line;
-    font-size:14px;
-    color:#555;
+    font-size:15px;
+    color:#2d2d2d;
     line-height:2;
     padding:6px 0 12px 18px;
     border-left:1px solid #ede8e0;
-    margin:4px 0 8px 0
+    margin:4px 0 8px 0;
+    animation:slideDown .35s ease
+  }
+  @keyframes slideDown{
+    from{opacity:0;transform:translateY(-8px);max-height:0}
+    to{opacity:1;transform:translateY(0);max-height:2000px}
   }
 
   @media(max-width:500px){
@@ -329,57 +494,34 @@
 </head>
 <body>
 <div class="wrap">
-  <header>
+  <header class="fade-in">
     <h1>杂坛</h1>
     <span class="date" id="today"></span>
     <span class="todo-badge" id="todoBadge"></span>
   </header>
 
+  <div class="nav">
+    <a href="#project">大创</a>
+    <a href="#poems">诗稿</a>
+    <a href="#quotes">语录</a>
+    <a href="#notes">杂记</a>
+  </div>
+
   <div class="main-layout">
     <div class="main-content">
 
-      <hr>
-  <div class="section-title">大创</div>
-  <div id="progress">
-    <div class="phase">
-      <div class="phase-head"><span class="name">申报审批</span><span class="pct">100%</span></div>
-      <div class="bar"><div class="bar-fill" style="width:100%"></div></div>
-    </div>
-    <div class="phase">
-      <div class="phase-head"><span class="name">NSGA-II 复现</span><span class="pct">85%</span></div>
-      <div class="bar"><div class="bar-fill" style="width:85%"></div></div>
-      <div class="sub"><span class="done">✓ 算法原理</span><span class="done">✓ pymoo</span><span class="done">✓ baseline</span><span>○ 结果验证</span></div>
-    </div>
-    <div class="phase">
-      <div class="phase-head"><span class="name">建筑群耦合建模</span><span class="pct">0%</span></div>
-      <div class="bar"><div class="bar-fill" style="width:0%"></div></div>
-    </div>
-    <div class="phase">
-      <div class="phase-head"><span class="name">LLM 数据融合</span><span class="pct">30%</span></div>
-      <div class="bar"><div class="bar-fill" style="width:30%"></div></div>
-      <div class="sub"><span class="done">✓ LLM 接口</span><span>○ 数据采集</span><span>○ 数据对齐</span><span>○ 特征工程</span></div>
-    </div>
-    <div class="phase">
-      <div class="phase-head"><span class="name">负荷预测与需求响应</span><span class="pct">0%</span></div>
-      <div class="bar"><div class="bar-fill" style="width:0%"></div></div>
-    </div>
-    <div class="phase">
-      <div class="phase-head"><span class="name">多目标优化调度</span><span class="pct">0%</span></div>
-      <div class="bar"><div class="bar-fill" style="width:0%"></div></div>
-    </div>
-    <div class="phase">
-      <div class="phase-head"><span class="name">结题验收</span><span class="pct">0%</span></div>
-      <div class="bar"><div class="bar-fill" style="width:0%"></div></div>
-    </div>
-  </div>
+      <hr class="fade-in">
+  <div class="section-title fade-in" id="project">大创</div>
+  <div id="progress"></div>
 
   <hr>
 
   <!-- 诗稿 -->
-  <div class="content-block">
-    <div class="section-title">诗稿</div>
-    <div class="entry">
-      <b>《轻轻》</b>
+  <div class="content-block fade-in">
+    <div class="section-title" id="poems">诗稿</div>
+
+    <details class="collapsible">
+      <summary><span class="arrow">▶</span><b>《轻轻》</b></summary>
       <div class="full">
 在所有无比寂静的黑暗里
 我可以看见
@@ -420,22 +562,70 @@
 啊 轻轻
 我想轻轻抱着你
 啊 轻轻
-我想轻轻爱着你
-      </div>
-    </div>
-    <div class="line"><b>《如果有吉他》</b> — 人间的芳草地需要浇水，不必盼着花，不必追着谁</div>
-    <div class="line"><b>未命名</b> — 你说爱究竟到底如何呢？我翻遍史书不懂得。是卓文君么，一见如故，耳鬓厮磨。亦或者梁山伯，缺你世间无颜色。</div>
-    <div class="line"><b>《孤歌》</b> — 孤歌里徘徊，愈发愈沉默。我想写首歌，送与百花落。齐齐诵巍峨，不愿渡情河。</div>
-    <div class="line"><b>《要》</b> — 要平凡，要孤独，要不堪，要脆弱的像个灵魂在不断的发颤。意象堆叠的尽是老生常谈，也无法遮掩我的不安。我在小风小雨中徘徊，任性的不打伞。</div>
-    <div class="line"><b>《去食堂》</b> — 请让我吐纳呼吸空气里的诗意，捕捉一些雨滴撂在我的碗里——哦呀，满汉全席！</div>
-    <div class="line"><b>《骤光》</b> — 人造之霓虹浮悬于天际，衰疲于奔命，不抬头；忽然很想点根烟，摸了半天，才发觉自己本就不是烟民。骤光，忽冷暖。</div>
+我想轻轻爱着你</div>
+    </details>
+
+    <details class="collapsible">
+      <summary><span class="arrow">▶</span><b>《如果有吉他》</b></summary>
+      <div class="full">人间的芳草地需要浇水
+不必盼着花
+不必追着谁</div>
+    </details>
+
+    <details class="collapsible">
+      <summary><span class="arrow">▶</span><b>未命名</b></summary>
+      <div class="full">你说爱究竟到底如何呢？
+我翻遍史书不懂得。
+是卓文君么，一见如故，耳鬓厮磨。
+亦或者梁山伯，缺你世间无颜色。</div>
+    </details>
+
+    <details class="collapsible">
+      <summary><span class="arrow">▶</span><b>《孤歌》</b></summary>
+      <div class="full">孤歌里徘徊，愈发愈沉默。
+我想写首歌，送与百花落。
+齐齐诵巍峨，不愿渡情河。</div>
+    </details>
+
+    <details class="collapsible">
+      <summary><span class="arrow">▶</span><b>《要》</b></summary>
+      <div class="full">要平凡
+要孤独
+要不堪
+要脆弱的像个灵魂在不断的发颤
+
+意象堆叠的尽是老生常谈
+也无法遮掩我的不安
+
+我在小风小雨中徘徊
+任性的不打伞</div>
+    </details>
+
+    <details class="collapsible">
+      <summary><span class="arrow">▶</span><b>《去食堂》</b></summary>
+      <div class="full">请让我吐纳呼吸空气里的诗意
+捕捉一些雨滴撂在我的碗里
+——哦呀，满汉全席！</div>
+    </details>
+
+    <details class="collapsible">
+      <summary><span class="arrow">▶</span><b>《骤光》</b></summary>
+      <div class="full">人造之霓虹浮悬于天际
+衰疲于奔命，不抬头
+
+忽然很想点根烟
+摸了半天，才发觉自己本就不是烟民
+
+骤光，忽冷暖。</div>
+    </details>
+
   </div>
 
   <hr>
 
   <!-- 语录 -->
-  <div class="content-block">
-    <div class="section-title">语录</div>
+  <div class="content-block fade-in fade-in-delay-1">
+    <div class="section-title" id="quotes">语录</div>
     <div class="line">"想晒太阳晒太阳，想干嘛干嘛。实在无聊了，去看首别人的，有想试的就试试，没有就继续歇着。允许停下来的自己。允许狂奔的自己。" <i>— 老姐</i></div>
     <div class="line">"我的笑是我的面具，后来变成我的习惯，现在是我的一部分，我认可的一部分。" <i>— 老姐</i></div>
     <div class="line">"你的难受我认为是你的经历严重跟不上你的认知导致的。" <i>— 老姐</i></div>
@@ -450,8 +640,8 @@
   <hr>
 
   <!-- 杂记 -->
-  <div class="content-block">
-    <div class="section-title">杂记</div>
+  <div class="content-block fade-in fade-in-delay-2">
+    <div class="section-title" id="notes">杂记</div>
 
     <details class="collapsible">
       <summary><span class="arrow">▶</span><span class="date">2026-06-07</span><b>NSGA-II 重写</b></summary>
@@ -612,7 +802,7 @@ GitHub 的接入过程有点曲折。Clash 的端口不是默认的 7890 而是 
     </div>
 
     <div class="sidebar">
-      <div class="todo-panel" id="todoPanel">
+      <div class="todo-panel fade-in fade-in-delay-3" id="todoPanel">
         <div class="w-title">待办</div>
         <input class="todo-input" id="todoInput" placeholder="记一件事...">
         <div class="todo-count" id="todoCount"></div>
@@ -620,9 +810,21 @@ GitHub 的接入过程有点曲折。Clash 的端口不是默认的 7890 而是 
         <div class="todo-actions" id="todoActions"></div>
       </div>
 
-      <div class="widget">
+      <div class="widget fade-in fade-in-delay-4">
         <div class="w-title">倒计时</div>
         <div id="countdownList"></div>
+        <div class="countdown-input-row">
+          <input class="cd-label" id="cdInput" placeholder="事项..." maxlength="30">
+          <input class="cd-date" id="cdDate" type="date">
+          <button class="cd-add" id="cdAdd">+</button>
+        </div>
+      </div>
+
+      <div class="widget fade-in fade-in-delay-5">
+        <div class="w-title">知乎热榜</div>
+        <ul class="hot-list" id="hotList">
+          <li class="h-loading">加载中...</li>
+        </ul>
       </div>
     </div>
 
@@ -742,14 +944,23 @@ input.addEventListener('keydown', e => {
 load()
 
 // ---- countdown ----
-const deadlines = [
+const CD_KEY = 'zatan_countdown'
+const defaultCD = [
   {label:'四级考试', date:'2026-06-13'},
   {label:'大创结题', date:'2027-05-31'},
 ]
-function renderCountdown(){
+
+function loadCD(){
+  let saved;
+  try{ saved = JSON.parse(localStorage.getItem(CD_KEY)) }catch(e){}
+  return (saved && saved.length) ? saved : defaultCD
+}
+
+function renderCD(){
+  const data = loadCD()
   const el = document.getElementById('countdownList')
   const now = new Date()
-  el.innerHTML = deadlines.map(d => {
+  el.innerHTML = data.map((d,i) => {
     const target = new Date(d.date)
     const diff = Math.ceil((target - now) / (1000*60*60*24))
     let cls = 'days'
@@ -759,10 +970,171 @@ function renderCountdown(){
     else if(diff < 0 && diff > -30) text = `已过 ${-diff} 天`
     else { cls += ' pass'; text = `已过 ${-diff} 天` }
     if(diff > 0 && diff <= 7) cls += ' urgent'
-    return `<div class="countdown-item"><span class="label">${d.label}</span><span class="${cls}">${text}</span></div>`
+    return `<div class="countdown-item">
+      <span class="label">${escapeHtml(d.label)}</span>
+      <span class="${cls}">${text}</span>
+      <span class="del" data-i="${i}">×</span>
+    </div>`
+  }).join('')
+
+  el.querySelectorAll('.del').forEach(btn => {
+    btn.onclick = () => {
+      const data = loadCD()
+      data.splice(parseInt(btn.dataset.i), 1)
+      localStorage.setItem(CD_KEY, JSON.stringify(data))
+      renderCD()
+    }
+  })
+}
+renderCD()
+
+document.getElementById('cdAdd').onclick = () => {
+  const label = document.getElementById('cdInput').value.trim()
+  const date = document.getElementById('cdDate').value
+  if(!label || !date) return
+  const data = loadCD()
+  data.push({label, date})
+  localStorage.setItem(CD_KEY, JSON.stringify(data))
+  document.getElementById('cdInput').value = ''
+  document.getElementById('cdDate').value = ''
+  renderCD()
+}
+document.getElementById('cdInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') document.getElementById('cdAdd').click()
+})
+
+// ---- interactive progress ----
+const PROGRESS_KEY = 'zatan_progress'
+const phaseData = [
+  {name:'申报审批', pct:100, subs:[]},
+  {name:'NSGA-II 复现', pct:85, subs:[{label:'算法原理',done:true},{label:'pymoo',done:true},{label:'baseline',done:true},{label:'结果验证',done:false}]},
+  {name:'建筑群耦合建模', pct:0, subs:[]},
+  {name:'LLM 数据融合', pct:30, subs:[{label:'LLM 接口',done:true},{label:'数据采集',done:false},{label:'数据对齐',done:false},{label:'特征工程',done:false}]},
+  {name:'负荷预测与需求响应', pct:0, subs:[]},
+  {name:'多目标优化调度', pct:0, subs:[]},
+  {name:'结题验收', pct:0, subs:[]},
+]
+
+function loadProgress(){
+  let saved
+  try{ saved = JSON.parse(localStorage.getItem(PROGRESS_KEY)) }catch(e){}
+  // 旧版0%bug检测：第一条本该>0%却显示0% → 重置
+  const bad = !saved || saved.length !== phaseData.length ||
+    (saved[0] && saved[0].pct === 0 && phaseData[0].pct > 0)
+  if(bad) {
+    const fresh = phaseData.map(p => ({
+      pct: p.pct,
+      subs: p.subs.map(s => ({label:s.label, done:s.done||false}))
+    }))
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(fresh))
+    return fresh
+  }
+  return saved
+}
+
+function renderProgress(){
+  const data = loadProgress()
+  const el = document.getElementById('progress')
+  el.innerHTML = data.map((p,i) => {
+    const subsHtml = p.subs.map((s,j) =>
+      `<span class="${s.done?'done':''}" data-p="${i}" data-s="${j}">${s.done?'✓':'○'} ${s.label}</span>`
+    ).join('')
+    return `<div class="phase">
+      <div class="phase-head">
+        <span class="name">${phaseData[i].name}</span>
+        <span class="pct" data-i="${i}">${p.pct}%</span>
+      </div>
+      <div class="bar"><div class="bar-fill" style="width:${p.pct}%"></div></div>
+      ${subsHtml ? `<div class="sub">${subsHtml}</div>` : ''}
+    </div>`
+  }).join('')
+
+  // click to edit percentage
+  el.querySelectorAll('.pct').forEach(span => {
+    span.addEventListener('click', function(e){
+      e.stopPropagation()
+      const i = parseInt(this.dataset.i)
+      const data = loadProgress()
+      const input = document.createElement('input')
+      input.className = 'pct-input'
+      input.type = 'number'
+      input.min = 0
+      input.max = 100
+      input.value = data[i].pct
+      input.onblur = () => {
+        const v = Math.min(100, Math.max(0, parseInt(input.value) || 0))
+        data[i].pct = v
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify(data))
+        renderProgress()
+      }
+      input.onkeydown = e => {
+        if(e.key === 'Enter') input.blur()
+        if(e.key === 'Escape') renderProgress()
+      }
+      this.textContent = ''
+      this.appendChild(input)
+      input.focus()
+      input.select()
+    })
+  })
+
+  // click sub-items to toggle
+  el.querySelectorAll('.sub span').forEach(span => {
+    span.addEventListener('click', function(){
+      const i = parseInt(this.dataset.p)
+      const j = parseInt(this.dataset.s)
+      const data = loadProgress()
+      data[i].subs[j].done = !data[i].subs[j].done
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(data))
+      renderProgress()
+    })
+  })
+}
+renderProgress()
+
+// ---- zhihu hot list ----
+// 内置默认数据，立即显示无需等待
+const defaultHot = [{"rank":1,"title":"山西运城出现大面积异味，多市民被熏醒、 3 岁女童呼吸困难，官方称正排查源头，什么情况？可能是什么气体？","url":"https://www.zhihu.com/question/2047336448693626831","heat":"668万"},{"rank":2,"title":"三大运营商被质疑杀熟，网友称 159 元套餐不如 39 元，新老用户不同权根源在哪？用户该如何维权？","url":"https://www.zhihu.com/question/2047971138655844271","heat":"432万"},{"rank":3,"title":"阿里合伙人委员会内网发帖，称钉钉管理「不是阿里文化该有的样子」，钉钉管理到底出了什么问题？该如何纠偏？","url":"https://www.zhihu.com/question/2048010218446001940","heat":"215万"},{"rank":4,"title":"阿里、百度、蔚来、药明康德被美国防部列为中国军事企业，如何解读美方此举意图？会产生哪些影响？","url":"https://www.zhihu.com/question/2047674064383079776","heat":"182万"},{"rank":5,"title":"你见过最惊艳的公司名称是什么？","url":"https://www.zhihu.com/question/287340738","heat":"150万"},{"rank":6,"title":"近视 500 度如果整整一年住在大山里，没有手机没有电脑，每天面对大自然，近视能减轻吗？","url":"https://www.zhihu.com/question/371021313","heat":"134万"},{"rank":7,"title":"为什么每年我们都会讨论高考后的作文题目而不是讨论数学或者物理的压轴题？不是要更重视理工科吗？","url":"https://www.zhihu.com/question/2046239395876020707","heat":"132万"},{"rank":8,"title":"小米 SU7 电吸门夹伤女子致骨折，官方确认无防夹功能，汽车电吸门技术应如何平衡便利与安全？","url":"https://www.zhihu.com/question/2046860767601997436","heat":"131万"},{"rank":9,"title":"网友调侃部分大学行政老师，称其以最小权力最大程度为难人，为什么会有这种现象？你有过被刁难的经历吗？","url":"https://www.zhihu.com/question/2047355145202000209","heat":"130万"},{"rank":10,"title":"为什么国家要在教材上设置反自学模式，难道非要老师教吗？就不能自己学吗？","url":"https://www.zhihu.com/question/1939204343371928254","heat":"126万"}]
+
+function renderHotList(data){
+  const el = document.getElementById('hotList')
+  el.innerHTML = data.map(item => {
+    const rc = item.rank <= 3 ? 'h-rank top3' : 'h-rank'
+    return `<li><a href="${item.url}" target="_blank" rel="noopener">
+      <span class="${rc}">${item.rank}</span>
+      <span class="h-title">${escapeHtml(item.title)}</span>
+      ${item.heat ? `<span class="h-heat">${escapeHtml(item.heat)}</span>` : ''}
+    </a></li>`
   }).join('')
 }
-renderCountdown()
+
+// 立刻显示默认数据，再异步拉取更新
+renderHotList(defaultHot)
+
+function fetchHotList(){
+  // Abort if fetch takes >3s (prevents hanging on file://)
+  const ctrl = new AbortController()
+  setTimeout(() => ctrl.abort(), 3000)
+  fetch('hotlist.json?_t=' + Date.now(), {signal: ctrl.signal})
+    .then(r => r.json())
+    .then(renderHotList)
+    .catch(() => {})
+}
+
+// 后台拉取更新 + 每 5 分钟轮询
+fetchHotList()
+setInterval(fetchHotList, 5 * 60 * 1000)
+
+// ---- scroll reveal ----
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('show') })
+}, {threshold:.08})
+
+// auto-show header immediately on load
+document.querySelector('header.fade-in').classList.add('show')
+
+// observe all fade-in elements
+document.querySelectorAll('.fade-in:not(header)').forEach(el => observer.observe(el))
 </script>
 </body>
 </html>
