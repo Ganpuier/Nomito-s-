@@ -1406,6 +1406,18 @@ const busuanzi = document.createElement('script')
 busuanzi.src = '//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js'
 busuanzi.async = true
 // ---- comments ----
+function deleteComment(id){
+  const secret = prompt('输入管理密码删除此留言：')
+  if(!secret) return
+  fetch('https://za-tan.top/api/comments/delete', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({id, secret})
+  }).then(r => r.json()).then(d => {
+    if(d.ok) loadComments()
+    else alert('删除失败：' + (d.error || '未知错误'))
+  }).catch(() => alert('网络错误'))
+}
 function loadComments(){
   fetch('https://za-tan.top/api/comments?_t='+Date.now())
     .then(r => r.json())
@@ -1414,7 +1426,14 @@ function loadComments(){
       if(!el) return
       if(!d || !d.length){ el.innerHTML = '<div style="color:var(--sub);font-size:13px">还没有留言</div>'; return }
       el.innerHTML = d.map(c =>
-        '<div class="comment-item"><div class="meta"><span class="name">'+escapeHtml(c.name)+'</span><span class="time">'+escapeHtml(c.time)+'</span></div><div class="text">'+escapeHtml(c.content).replace(/\n/g,'<br>')+'</div></div>'
+        '<div class="comment-item">' +
+          '<div class="meta">' +
+            '<span class="name">'+escapeHtml(c.name)+'</span>' +
+            '<span class="time">'+escapeHtml(c.time)+'</span>' +
+            '<span class="del-btn" onclick="deleteComment('+c.id+')" style="margin-left:auto;cursor:pointer;color:var(--bg3);font-size:13px;transition:color .3s" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--bg3)\'">×</span>' +
+          '</div>' +
+          '<div class="text">'+escapeHtml(c.content).replace(/\n/g,'<br>')+'</div>' +
+        '</div>'
       ).join('')
     }).catch(() => {})
 }
