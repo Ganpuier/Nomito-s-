@@ -585,6 +585,7 @@
 
   <div class="nav">
     <a href="#/project">大创</a>
+    <a href="#/heli">直升机</a>
     <a href="#/poems">诗稿</a>
     <a href="#/quotes">语录</a>
     <a href="#/music">歌单</a>
@@ -599,6 +600,26 @@
       <hr class="fade-in">
   <div class="section-title fade-in" id="project">大创</div>
   <div id="progress"></div>
+  </div>
+
+  <div class="page" data-page="heli">
+  <hr>
+  <div class="content-block fade-in">
+    <div class="section-title" id="heli">自制遥控直升机</div>
+    <div style="font-size:12px;color:var(--sub);margin-bottom:16px">
+      <span class="proj-badge phase">ESP32方案</span>
+      <span class="proj-badge phase">2026.06 — 2026.07</span>
+      <span class="proj-badge phase">空心杯电机</span>
+    </div>
+
+    <div class="proj-metrics" id="heliMetrics"></div>
+
+    <!-- timeline -->
+    <div class="proj-tl" id="heliTimeline"></div>
+
+    <!-- phases -->
+    <div id="heliProgress"></div>
+  </div>
   </div>
 
   <div class="page" data-page="poems">
@@ -1277,6 +1298,168 @@ function renderProgress(){
   })
 }
 renderProgress()
+
+// ---- helicopter progress ----
+const HELI_KEY = 'zatan_heli'
+const heliPhaseData = [
+  {
+    name:'电子搭建',
+    pct:0,
+    subs:[
+      {label:'ESP32 点灯测试',done:false},
+      {label:'MPU6050 读数',done:false},
+      {label:'MOS管驱动电机',done:false},
+      {label:'WiFi遥控页面',done:false},
+    ]
+  },
+  {
+    name:'飞控开发',
+    pct:0,
+    subs:[
+      {label:'姿态解算（互补滤波）',done:false},
+      {label:'姿态PID',done:false},
+      {label:'锁尾PID',done:false},
+      {label:'PID参数整定',done:false},
+    ]
+  },
+  {
+    name:'机身制造',
+    pct:0,
+    subs:[
+      {label:'骨架设计（雪糕棒/环氧板）',done:false},
+      {label:'电机座 & 尾管',done:false},
+      {label:'齿轮减速组',done:false},
+      {label:'重心配平',done:false},
+    ]
+  },
+  {
+    name:'系统集成',
+    pct:0,
+    subs:[
+      {label:'飞控板上机',done:false},
+      {label:'整机连线',done:false},
+      {label:'上电测试',done:false},
+      {label:'首飞',done:false},
+    ]
+  },
+  {
+    name:'迭代优化',
+    pct:0,
+    subs:[
+      {label:'结构加固',done:false},
+      {label:'遥控手感调优',done:false},
+      {label:'电池续航测试',done:false},
+      {label:'改装修复记录',done:false},
+    ]
+  },
+]
+
+function loadHeli(){
+  let saved
+  try{ saved = JSON.parse(localStorage.getItem(HELI_KEY)) }catch(e){}
+  if(!saved || saved.length !== heliPhaseData.length){
+    const fresh = heliPhaseData.map(p => ({
+      pct: p.pct,
+      subs: p.subs.map(s => ({label:s.label, done:s.done||false}))
+    }))
+    localStorage.setItem(HELI_KEY, JSON.stringify(fresh))
+    return fresh
+  }
+  return saved
+}
+
+function heliOverall(data){
+  return Math.round(data.reduce((s,p) => s + p.pct, 0) / data.length)
+}
+
+function renderHeli(){
+  const data = loadHeli()
+  const total = heliOverall(data)
+  const el = document.getElementById('heliProgress')
+  const metricsEl = document.getElementById('heliMetrics')
+  const tlEl = document.getElementById('heliTimeline')
+  if(!el || !metricsEl || !tlEl) return
+
+  // metrics
+  metricsEl.innerHTML = `
+    <div class="card"><div class="num">${total}%</div><div class="lbl">整体进度</div></div>
+    <div class="card"><div class="num">¥65</div><div class="lbl">预算</div></div>
+    <div class="card"><div class="num">${data.reduce((s,p) => s + p.subs.filter(s=>s.done).length, 0)}/${data.reduce((s,p) => s + p.subs.length, 0)}</div><div class="lbl">子项完成</div></div>
+  `
+
+  // timeline
+  const tl = [
+    {label:'电子搭建', date:'第1周', done:data[0].pct >= 100},
+    {label:'飞控开发', date:'第1-2周', done:data[1].pct >= 100},
+    {label:'机身制造', date:'第2周', done:data[2].pct >= 100},
+    {label:'系统集成', date:'第3周', done:data[3].pct >= 100},
+    {label:'迭代优化', date:'第3周+', done:data[4].pct >= 100},
+  ]
+  const activeIdx = data.findIndex(p => p.pct > 0 && p.pct < 100)
+  tlEl.innerHTML = tl.map((t,i) => {
+    let cls = 'milestone'
+    if(t.done) cls += ' done'
+    if(i === activeIdx) cls += ' active'
+    return `<div class="${cls}">${t.label}<span class="tl-date">${t.date}</span></div>`
+  }).join('')
+
+  // phases
+  el.innerHTML = data.map((p,i) => {
+    const subsHtml = p.subs.map((s,j) =>
+      `<span class="${s.done?'done':''}" data-hp="${i}" data-hs="${j}">${s.done?'✓':'○'} ${s.label}</span>`
+    ).join('')
+    return `<div class="phase">
+      <div class="phase-head">
+        <span class="name">${heliPhaseData[i].name}</span>
+        <span class="pct hpct" data-hi="${i}">${p.pct}%</span>
+      </div>
+      <div class="bar"><div class="bar-fill" style="width:${p.pct}%"></div></div>
+      ${subsHtml ? `<div class="sub">${subsHtml}</div>` : ''}
+    </div>`
+  }).join('')
+
+  // click to edit percentage
+  el.querySelectorAll('.hpct').forEach(span => {
+    span.addEventListener('click', function(e){
+      e.stopPropagation()
+      const i = parseInt(this.dataset.hi)
+      const data = loadHeli()
+      const input = document.createElement('input')
+      input.className = 'pct-input'
+      input.type = 'number'
+      input.min = 0
+      input.max = 100
+      input.value = data[i].pct
+      input.onblur = () => {
+        const v = Math.min(100, Math.max(0, parseInt(input.value) || 0))
+        data[i].pct = v
+        localStorage.setItem(HELI_KEY, JSON.stringify(data))
+        renderHeli()
+      }
+      input.onkeydown = e => {
+        if(e.key === 'Enter') input.blur()
+        if(e.key === 'Escape') renderHeli()
+      }
+      this.textContent = ''
+      this.appendChild(input)
+      input.focus()
+      input.select()
+    })
+  })
+
+  // toggle sub-items
+  el.querySelectorAll('.sub span').forEach(span => {
+    span.addEventListener('click', function(){
+      const i = parseInt(this.dataset.hp)
+      const j = parseInt(this.dataset.hs)
+      const data = loadHeli()
+      data[i].subs[j].done = !data[i].subs[j].done
+      localStorage.setItem(HELI_KEY, JSON.stringify(data))
+      renderHeli()
+    })
+  })
+}
+renderHeli()
 
 // ---- zhihu hot list ----
 // 内置默认数据，立即显示无需等待
