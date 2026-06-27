@@ -1112,6 +1112,7 @@ load()
 
 // ---- countdown ----
 const CD_KEY = 'zatan_countdown'
+const CD_VER = 2
 const defaultCD = [
   {label:'线代A·天J9', date:'2026-06-29'},
   {label:'近现代史纲·天J10', date:'2026-06-30'},
@@ -1125,7 +1126,8 @@ const defaultCD = [
 function loadCD(){
   let saved;
   try{ saved = JSON.parse(localStorage.getItem(CD_KEY)) }catch(e){}
-  return (saved && saved.length) ? saved : defaultCD
+  if(saved && saved.ver === CD_VER) return saved.items
+  return defaultCD
 }
 
 function renderCD(){
@@ -1153,7 +1155,7 @@ function renderCD(){
     btn.onclick = () => {
       const data = loadCD()
       data.splice(parseInt(btn.dataset.i), 1)
-      localStorage.setItem(CD_KEY, JSON.stringify(data))
+      localStorage.setItem(CD_KEY, JSON.stringify({ver:CD_VER, items:data}))
       renderCD()
     }
   })
@@ -1166,7 +1168,7 @@ document.getElementById('cdAdd').onclick = () => {
   if(!label || !date) return
   const data = loadCD()
   data.push({label, date})
-  localStorage.setItem(CD_KEY, JSON.stringify(data))
+  localStorage.setItem(CD_KEY, JSON.stringify({ver:CD_VER, items:data}))
   document.getElementById('cdInput').value = ''
   document.getElementById('cdDate').value = ''
   renderCD()
